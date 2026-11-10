@@ -41,6 +41,7 @@ footer{max-width:1286px;margin:auto;padding:15px 18px 45px;color:var(--dim);font
 .routine-short{display:none}
 .card input[type=range],.card .status{display:none}
 .card.square-art .art canvas{aspect-ratio:1/1}
+.card[data-id="ex26"] .art,.card[data-id="ex35"] .art{aspect-ratio:2/3;display:flex;align-items:center}
 .toolbar label[for=layout],#layout{display:none}
 @media(max-width:850px){.routine-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:620px){
@@ -104,8 +105,19 @@ function draw(item,canvas,index){
  context.fillStyle='#191d21';context.fillRect(0,0,targetWidth,targetHeight);
  const fit=Math.min(targetWidth/w,targetHeight/h);
  const drawnWidth=w*fit,drawnHeight=h*fit;
- context.drawImage(image,index%cols*w,Math.floor(index/cols)*h,w,h,
-  (targetWidth-drawnWidth)/2,(targetHeight-drawnHeight)/2,drawnWidth,drawnHeight);
+ if(item.id==='ex02'){
+  const margin=3,scale=.9,scaledWidth=drawnWidth*scale,scaledHeight=drawnHeight*scale;
+  const x=(targetWidth-scaledWidth)/2,y=(targetHeight-scaledHeight)/2,edge=35;
+  context.drawImage(image,index%cols*w+margin,Math.floor(index/cols)*h+margin,w-2*margin,h-2*margin,
+   x,y,scaledWidth,scaledHeight);
+  let fade=context.createLinearGradient(x,y,x+edge,y);fade.addColorStop(0,'#191d21');fade.addColorStop(1,'rgba(25,29,33,0)');context.fillStyle=fade;context.fillRect(x,y,edge,scaledHeight);
+  fade=context.createLinearGradient(x+scaledWidth-edge,y,x+scaledWidth,y);fade.addColorStop(0,'rgba(25,29,33,0)');fade.addColorStop(1,'#191d21');context.fillStyle=fade;context.fillRect(x+scaledWidth-edge,y,edge,scaledHeight);
+  fade=context.createLinearGradient(x,y,x,y+edge);fade.addColorStop(0,'#191d21');fade.addColorStop(1,'rgba(25,29,33,0)');context.fillStyle=fade;context.fillRect(x,y,scaledWidth,edge);
+  fade=context.createLinearGradient(x,y+scaledHeight-edge,x,y+scaledHeight);fade.addColorStop(0,'rgba(25,29,33,0)');fade.addColorStop(1,'#191d21');context.fillStyle=fade;context.fillRect(x,y+scaledHeight-edge,scaledWidth,edge);
+ }else{
+  context.drawImage(image,index%cols*w,Math.floor(index/cols)*h,w,h,
+   (targetWidth-drawnWidth)/2,(targetHeight-drawnHeight)/2,drawnWidth,drawnHeight);
+ }
  if(item.id==='ex09'){
   // Reuse the same rigid weight-stack tower in every pullover frame.
   const left=(targetWidth-drawnWidth)/2,top=(targetHeight-drawnHeight)/2;
